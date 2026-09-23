@@ -1,0 +1,28 @@
+{
+  "name": "calv-cli",
+  "version": "0.1.0",
+  "description": "CLI personale interattiva in TypeScript",
+  "license": "UNLICENSED",
+  "type": "module",
+  "bin": {
+    "calv": "./dist/calv.js"
+  },
+  "files": ["dist", "README.md"],
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "bun src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "build": "bun build src/index.ts --target=node --outfile dist/calv.js",
+    "prepack": "npm run typecheck && npm run build"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.8.1",
+    "commander": "^15.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "typescript": "^6.0.3"
+  }
+}
