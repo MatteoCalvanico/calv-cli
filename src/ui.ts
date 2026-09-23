@@ -1,14 +1,14 @@
 const GLYPHS: Record<string, readonly string[]> = {
-    C: [' ####', '#    ', '#    ', '#    ', ' ####'],
-    A: [' ### ', '#   #', '#####', '#   #', '#   #'],
-    L: ['#    ', '#    ', '#    ', '#    ', '#####'],
-    V: ['#   #', '#   #', '#   #', ' # # ', '  #  '],
-    '-': ['     ', '     ', '#####', '     ', '     '],
-    I: ['#####', '  #  ', '  #  ', '  #  ', '#####'],
+    C: [' █████ ', '██   ██', '██     ', '██     ', '██     ', '██   ██', ' █████ '],
+    A: ['  ███  ', ' ██ ██ ', '██   ██', '███████', '██   ██', '██   ██', '██   ██'],
+    L: ['██     ', '██     ', '██     ', '██     ', '██     ', '██     ', '███████'],
+    V: ['██   ██', '██   ██', '██   ██', ' ██ ██ ', ' ██ ██ ', '  ███  ', '   █   '],
+    '-': ['       ', '       ', '       ', '███████', '       ', '       ', '       '],
+    I: ['███████', '  ███  ', '  ███  ', '  ███  ', '  ███  ', '  ███  ', '███████'],
 }
 
 const NAME = 'CALV-CLI'
-const LOGO = Array.from({ length: 5 }, (_, row) =>
+const LOGO = Array.from({ length: GLYPHS.C.length }, (_, row) =>
     [...NAME].map((letter) => GLYPHS[letter][row]).join(' ')
 )
 
@@ -47,7 +47,7 @@ const explosionFrames = (): readonly (readonly string[])[] => {
     const burst = LOGO.map((line, row) =>
         row === 2 ? `* ${line} *` : `  ${line}  `
     )
-    const scattered = Array.from({ length: 5 }, (_, row) =>
+    const scattered = Array.from({ length: LOGO.length }, (_, row) =>
         [...NAME].map((letter, index) =>
             `${' '.repeat((index * 7 + row * 3) % 6)}${letter}`
         ).join('    ').padEnd(width)
@@ -58,6 +58,8 @@ const explosionFrames = (): readonly (readonly string[])[] => {
         '    +            .       *',
         '              *             +',
         '  *                    .',
+        '         .                    *',
+        '    +              .',
     ]
     return [burst, scattered, particles]
 }
@@ -103,8 +105,9 @@ export const printLogo = async (): Promise<void> => {
     if (supportsAnimation()) await playIntro()
 
     const color = supportsColor()
-    const logo = LOGO.map((line) =>
-        color ? `\u001B[38;5;${BLUE}m${BOLD}${line}${RESET}` : line
+    const logoColors = [27, 33, 39, 45, 39, 33, 27]
+    const logo = LOGO.map((line, row) =>
+        color ? `\u001B[38;5;${logoColors[row]}m${BOLD}${line}${RESET}` : line
     ).join('\n')
     const subtitle = 'CALV-CLI · CLI personale'
     process.stdout.write(`\n${logo}\n\n${color ? `${DIM}${subtitle}${RESET}` : subtitle}\n`)
